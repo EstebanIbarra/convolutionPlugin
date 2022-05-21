@@ -93,7 +93,7 @@ void ConvolutionPluginAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    
+    convolution.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
 }
 
 void ConvolutionPluginAudioProcessor::releaseResources()
@@ -135,11 +135,12 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-    }
+//    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+//    {
+//        auto* channelData = buffer.getWritePointer (channel);
+//
+//    }
+    convolution.process(buffer);
 }
 
 //==============================================================================
