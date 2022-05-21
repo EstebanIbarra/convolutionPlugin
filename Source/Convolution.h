@@ -19,22 +19,18 @@ public:
     /**
      Prepares the Sample Rate
      @param double inputSampleRate
+     @param int inputSamplesPerBlock
+     @param int InputChannels
      @return void
      */
-    void prepare(double inputSampleRate);
+    void prepare(double inputSampleRate, int inputSamplesPerBlock, int inputChannels);
     /**
      Preprocess the Audio Buffer
      @param juce::AudioBuffer<float> inputBuffer
      @return void
      */
     void process(juce::AudioBuffer<float> inputBuffer);
-    /**
-     Process a sample in the Audio Buffer
-     @param float sample
-     @param u_int8_t channel
-     @return float processedSample
-     */
-    float processSample(float sample, u_int8_t channel);
 private:
-    double sampleRate {0.0f};
+    juce::dsp::Convolution juceConvolution;
+    juce::File impulseFile;
 };
