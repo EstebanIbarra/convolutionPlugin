@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include "Convolution.h"
+#include "Limiter.h"
+#include "DryWet.h"
 
 //==============================================================================
 /**
@@ -53,9 +55,16 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
+    
+    //==============================================================================
+    juce::AudioProcessorValueTreeState apvts;
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessor);
+    juce::AudioBuffer<float> dryBuffer;
     Convolution convolution;
+    Limiter limiter;
+    std::unique_ptr<DryWet> dryWet;
 };

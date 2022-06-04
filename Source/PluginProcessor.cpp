@@ -19,9 +19,10 @@ ConvolutionPluginAudioProcessor::ConvolutionPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), apvts(*this, nullptr, "parameters", createParameters())
 #endif
 {
+    dryWet = std::make_unique<DryWet>();
 }
 
 ConvolutionPluginAudioProcessor::~ConvolutionPluginAudioProcessor()
@@ -29,6 +30,19 @@ ConvolutionPluginAudioProcessor::~ConvolutionPluginAudioProcessor()
 }
 
 //==============================================================================
+
+juce::AudioProcessorValueTreeState::ParameterLayout ConvolutionPluginAudioProcessor::createParameters()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout parameters;
+    
+    parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "LIMITER_BYPASS", false, "Limiter Bypass"));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "LIMITER_THRESHOLD", -12.0f, 2.0f, 0.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "LIMITER_RELEASE", 1.0f, 4000.0f, 1000.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("DRY_WET", "DRY_WET", 0.0f, 100.0f, 50.0f));
+    
+    return parameters;
+}
+
 const juce::String ConvolutionPluginAudioProcessor::getName() const
 {
     return JucePlugin_Name;
@@ -93,13 +107,25 @@ void ConvolutionPluginAudioProcessor::changeProgramName (int index, const juce::
 //==============================================================================
 void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    convolution.prepare(sampleRate, samplesPerBlock, getTotalNumInputChannels());
+//    Prepares Dry Buffer
+    dryBuffer.setSize(getTotalNumInputChannels(), samplesPerBlock);
+    dryBuffer.clear();
+    
+//    Initializes specs
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumInputChannels();
+    
+//    Prepares Audio Classes
+    convolution.prepare(spec);
+    limiter.prepare(spec);
 }
 
 void ConvolutionPluginAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
+    convolution.~Convolution();
+    limiter.~Limiter();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -135,12 +161,11 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-//    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-//    {
-//        auto* channelData = buffer.getWritePointer (channel);
-//
-//    }
+    dryBuffer.makeCopyOf(buffer);
     convolution.process(buffer);
+    if (apvts.getRawParameterValue("LIMITER_BYPASS")->load())
+        limiter.process(buffer, apvts.getRawParameterValue("LIMITER_THRESHOLD")->load(), apvts.getRawParameterValue("LIMITER_RELEASE")->load());
+    dryWet->process(buffer, dryBuffer, apvts.getRawParameterValue("DRY_WET")->load());
 }
 
 //==============================================================================
