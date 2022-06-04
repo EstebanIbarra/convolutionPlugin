@@ -13,20 +13,17 @@
 Convolution::Convolution(){}
 Convolution::~Convolution(){}
 
-void Convolution::prepare(double inputSampleRate, int inputSamplesPerBlock, int inputChannels)
+void Convolution::prepare(juce::dsp::ProcessSpec spec)
 {
 //    Gets impulse path for user defined IRs
     juce::String impulsePath = juce::File::getSpecialLocation(juce::File::userDesktopDirectory).getFullPathName() + "/impulse.wav";
     impulseFile = juce::File(impulsePath);
     
-//    Initializes specs
-    juce::dsp::ProcessSpec spec;
-    spec.sampleRate = inputSampleRate;
-    spec.maximumBlockSize = inputSamplesPerBlock;
-    spec.numChannels = inputChannels;
+    /* TODO: Find a way to get the numChannels from File */
+    uint8_t irNumChannels = 1;
     
 //    Defines if IR is stereo and if requires trimming
-    const auto isStereo = inputChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
+    const auto isStereo = irNumChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
     const auto requiresTrimming = juce::dsp::Convolution::Trim::yes;
     
 //    Initializes juce Convolution
@@ -37,7 +34,7 @@ void Convolution::prepare(double inputSampleRate, int inputSamplesPerBlock, int 
     juceConvolution.loadImpulseResponse(impulseFile.getFullPathName(), isStereo, requiresTrimming, impulseFile.getSize());
 }
 
-void Convolution::process(juce::AudioBuffer<float> inputBuffer)
+void Convolution::process(juce::AudioBuffer<float> &inputBuffer)
 {
     juce::dsp::AudioBlock<float> audioBlock(inputBuffer);
     juce::dsp::ProcessContextReplacing<float> context(audioBlock);

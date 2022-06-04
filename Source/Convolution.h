@@ -16,20 +16,21 @@ class Convolution
 public:
     Convolution();
     ~Convolution();
+    
     /**
      Prepares the Sample Rate
-     @param double inputSampleRate
-     @param int inputSamplesPerBlock
-     @param int InputChannels
+     @param juce::dsp::ProcessSpec spec
      @return void
      */
-    void prepare(double inputSampleRate, int inputSamplesPerBlock, int inputChannels);
+    void prepare(juce::dsp::ProcessSpec spec);
+    
     /**
      Preprocess the Audio Buffer
      @param juce::AudioBuffer<float> inputBuffer
      @return void
      */
-    void process(juce::AudioBuffer<float> inputBuffer);
+    void process(juce::AudioBuffer<float> &inputBuffer);
+    
 private:
     juce::dsp::Convolution juceConvolution;
     juce::File impulseFile;
