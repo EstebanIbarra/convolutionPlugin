@@ -9,6 +9,8 @@
     <GROUP id="{43886E7F-1F59-2806-8A65-6A94D9549CC4}" name="Source">
       <FILE id="oFlsfl" name="Convolution.cpp" compile="1" resource="0" file="Source/Convolution.cpp"/>
       <FILE id="slJPev" name="Convolution.h" compile="0" resource="0" file="Source/Convolution.h"/>
+      <FILE id="NAsmrA" name="DryWet.cpp" compile="1" resource="0" file="Source/DryWet.cpp"/>
+      <FILE id="fANARJ" name="DryWet.h" compile="0" resource="0" file="Source/DryWet.h"/>
       <FILE id="nPWQ61" name="Limiter.cpp" compile="1" resource="0" file="Source/Limiter.cpp"/>
       <FILE id="moEoRR" name="Limiter.h" compile="0" resource="0" file="Source/Limiter.h"/>
       <FILE id="gq0e53" name="PluginProcessor.cpp" compile="1" resource="0"
