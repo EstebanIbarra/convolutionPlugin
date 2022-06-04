@@ -34,7 +34,7 @@ void Convolution::prepare(juce::dsp::ProcessSpec spec)
     juceConvolution.loadImpulseResponse(impulseFile.getFullPathName(), isStereo, requiresTrimming, impulseFile.getSize());
 }
 
-void Convolution::process(juce::AudioBuffer<float> &inputBuffer)
+void Convolution::process(juce::AudioBuffer<float> &inputBuffer, juce::AudioProcessorValueTreeState &apvts)
 {
     juce::dsp::AudioBlock<float> audioBlock(inputBuffer);
     juce::dsp::ProcessContextReplacing<float> context(audioBlock);

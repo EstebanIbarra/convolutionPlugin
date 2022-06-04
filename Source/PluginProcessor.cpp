@@ -35,10 +35,10 @@ juce::AudioProcessorValueTreeState::ParameterLayout ConvolutionPluginAudioProces
 {
     juce::AudioProcessorValueTreeState::ParameterLayout parameters;
     
-    parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "LIMITER_BYPASS", false, "Limiter Bypass"));
-    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "LIMITER_THRESHOLD", -12.0f, 2.0f, 0.0f));
-    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "LIMITER_RELEASE", 1.0f, 4000.0f, 1000.0f));
-    parameters.add(std::make_unique<juce::AudioParameterFloat>("DRY_WET", "DRY_WET", 0.0f, 100.0f, 50.0f));
+    parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "Limiter I/O", false));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "Limiter Threshold", -12.0f, 2.0f, 0.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "Limiter Release", 1.0f, 4000.0f, 1000.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("DRY_WET", "Dry/Wet", 0.0f, 100.0f, 50.0f));
     
     return parameters;
 }
@@ -162,10 +162,10 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     dryBuffer.makeCopyOf(buffer);
-    convolution.process(buffer);
+    convolution.process(buffer, apvts);
     if (apvts.getRawParameterValue("LIMITER_BYPASS")->load())
-        limiter.process(buffer, apvts.getRawParameterValue("LIMITER_THRESHOLD")->load(), apvts.getRawParameterValue("LIMITER_RELEASE")->load());
-    dryWet->process(buffer, dryBuffer, apvts.getRawParameterValue("DRY_WET")->load());
+        limiter.process(buffer, apvts);
+    dryWet->process(buffer, dryBuffer, apvts);
 }
 
 //==============================================================================

@@ -13,8 +13,9 @@
 DryWet::DryWet(){};
 DryWet::~DryWet(){};
 
-void DryWet::process(juce::AudioBuffer<float> &inputBufferWet, juce::AudioBuffer<float> &inputBufferDry, float inputDryWet)
+void DryWet::process(juce::AudioBuffer<float> &inputBufferWet, juce::AudioBuffer<float> &inputBufferDry, juce::AudioProcessorValueTreeState &apvts)
 {
+    float inputDryWet = apvts.getRawParameterValue("DRY_WET")->load();
     inputDryWet /= 100.0f;
     for(int channel = 0; channel < inputBufferWet.getNumChannels(); channel++) {
         for (int sampleIndex = 0; sampleIndex < inputBufferWet.getNumSamples(); sampleIndex++) {

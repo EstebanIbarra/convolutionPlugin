@@ -22,7 +22,7 @@ public:
      Mixes the dry and wet signal with the specified relation
      @param juce::AudioBuffer<float> &inputBufferWet
      @param juce::AudioBuffer<float> &inputBufferDry
-     @param float inputDryWet
+     @param juce::AudioProcessorValueTreeState &apvts
      */
-    void process(juce::AudioBuffer<float> &inputBufferWet, juce::AudioBuffer<float> &inputBufferDry, float inputDryWet = 50.0f);
+    void process(juce::AudioBuffer<float> &inputBufferWet, juce::AudioBuffer<float> &inputBufferDry, juce::AudioProcessorValueTreeState &apvts);
 };

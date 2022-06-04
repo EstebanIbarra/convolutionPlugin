@@ -26,10 +26,11 @@ public:
     
     /**
      Preprocess the Audio Buffer
-     @param juce::AudioBuffer<float> inputBuffer
+     @param juce::AudioBuffer<float> &inputBuffer
+     @param juce::AudioProcessorValueTreeState &apvts
      @return void
      */
-    void process(juce::AudioBuffer<float> &inputBuffer);
+    void process(juce::AudioBuffer<float> &inputBuffer, juce::AudioProcessorValueTreeState &apvts);
     
 private:
     juce::dsp::Convolution juceConvolution;

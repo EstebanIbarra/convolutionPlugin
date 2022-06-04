@@ -27,9 +27,10 @@ public:
     /**
      Preprocess the Audio Buffer
      @param juce::AudioBuffer<float> inputBuffer
+     @param juce::AudioProcessorValueTreeState &apvts
      @return void
      */
-    void process(juce::AudioBuffer<float> &inputBuffer, float thresholdInDb = 0.0f, float releaseInMs = 1000.0f);
+    void process(juce::AudioBuffer<float> &inputBuffer, juce::AudioProcessorValueTreeState &apvts);
     
 private:
     juce::dsp::Limiter<float> juceLimiter;
