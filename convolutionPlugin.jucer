@@ -6,6 +6,75 @@
               companyName="Esteban Ibarra" pluginAUMainType="'aufx'" pluginRTASCategory="0"
               maxBinaryFileSize="20971520">
   <MAINGROUP id="YinATF" name="convolutionPlugin">
+    <GROUP id="{39420B64-0F71-1818-EF2C-E7163666B5CF}" name="IR">
+      <FILE id="VIgz7f" name="Block Inside.wav" compile="0" resource="1"
+            file="IR/Block Inside.wav"/>
+      <FILE id="A9wQQa" name="Bottle Hall.wav" compile="0" resource="1" file="IR/Bottle Hall.wav"/>
+      <FILE id="nRNpi8" name="Cement Blocks 1.wav" compile="0" resource="1"
+            file="IR/Cement Blocks 1.wav"/>
+      <FILE id="nXa7hq" name="Cement Blocks 2.wav" compile="0" resource="1"
+            file="IR/Cement Blocks 2.wav"/>
+      <FILE id="Zey3uP" name="Chateau de Logne, Outside.wav" compile="0"
+            resource="1" file="IR/Chateau de Logne, Outside.wav"/>
+      <FILE id="tX14DI" name="Conic Long Echo Hall.wav" compile="0" resource="1"
+            file="IR/Conic Long Echo Hall.wav"/>
+      <FILE id="wX9tfK" name="Deep Space.wav" compile="0" resource="1" file="IR/Deep Space.wav"/>
+      <FILE id="a8Upu7" name="Derlon Sanctuary.wav" compile="0" resource="1"
+            file="IR/Derlon Sanctuary.wav"/>
+      <FILE id="wG2DrI" name="Direct Cabinet N1.wav" compile="0" resource="1"
+            file="IR/Direct Cabinet N1.wav"/>
+      <FILE id="C7wLJx" name="Direct Cabinet N2.wav" compile="0" resource="1"
+            file="IR/Direct Cabinet N2.wav"/>
+      <FILE id="trlkMl" name="Direct Cabinet N3.wav" compile="0" resource="1"
+            file="IR/Direct Cabinet N3.wav"/>
+      <FILE id="KotMlg" name="Direct Cabinet N4.wav" compile="0" resource="1"
+            file="IR/Direct Cabinet N4.wav"/>
+      <FILE id="zr5d8S" name="Five Columns Long.wav" compile="0" resource="1"
+            file="IR/Five Columns Long.wav"/>
+      <FILE id="gS7ays" name="Five Columns.wav" compile="0" resource="1"
+            file="IR/Five Columns.wav"/>
+      <FILE id="YJKOiM" name="French 18th Century Salon.wav" compile="0"
+            resource="1" file="IR/French 18th Century Salon.wav"/>
+      <FILE id="gGiqSS" name="Going Home.wav" compile="0" resource="1" file="IR/Going Home.wav"/>
+      <FILE id="LA8LUY" name="Greek 7 Echo Hall.wav" compile="0" resource="1"
+            file="IR/Greek 7 Echo Hall.wav"/>
+      <FILE id="eh5B55" name="Highly Damped Large Room.wav" compile="0" resource="1"
+            file="IR/Highly Damped Large Room.wav"/>
+      <FILE id="n0mUCJ" name="In The Silo Revised.wav" compile="0" resource="1"
+            file="IR/In The Silo Revised.wav"/>
+      <FILE id="FtlQOY" name="In The Silo.wav" compile="0" resource="1" file="IR/In The Silo.wav"/>
+      <FILE id="CXWJHM" name="Large Bottle Hall.wav" compile="0" resource="1"
+            file="IR/Large Bottle Hall.wav"/>
+      <FILE id="tcszDg" name="Large Long Echo Hall.wav" compile="0" resource="1"
+            file="IR/Large Long Echo Hall.wav"/>
+      <FILE id="C4XNDI" name="Large Wide Echo Hall.wav" compile="0" resource="1"
+            file="IR/Large Wide Echo Hall.wav"/>
+      <FILE id="QoXVw0" name="Masonic Lodge.wav" compile="0" resource="1"
+            file="IR/Masonic Lodge.wav"/>
+      <FILE id="FGKtCc" name="Musikvereinsaal.wav" compile="0" resource="1"
+            file="IR/Musikvereinsaal.wav"/>
+      <FILE id="WKO7Z1" name="Narrow Bumpy Space.wav" compile="0" resource="1"
+            file="IR/Narrow Bumpy Space.wav"/>
+      <FILE id="UExO2N" name="Nice Drum Room.wav" compile="0" resource="1"
+            file="IR/Nice Drum Room.wav"/>
+      <FILE id="xIPbJM" name="On a Star.wav" compile="0" resource="1" file="IR/On a Star.wav"/>
+      <FILE id="BdmrYN" name="Parking Garage.wav" compile="0" resource="1"
+            file="IR/Parking Garage.wav"/>
+      <FILE id="AEDD2K" name="Rays.wav" compile="0" resource="1" file="IR/Rays.wav"/>
+      <FILE id="LwQH7u" name="Right Glass Triangle.wav" compile="0" resource="1"
+            file="IR/Right Glass Triangle.wav"/>
+      <FILE id="uilZz9" name="Ruby Room.wav" compile="0" resource="1" file="IR/Ruby Room.wav"/>
+      <FILE id="cIVy1k" name="Scala Milan Opera Hall.wav" compile="0" resource="1"
+            file="IR/Scala Milan Opera Hall.wav"/>
+      <FILE id="JdB7Jt" name="Small Drum Room.wav" compile="0" resource="1"
+            file="IR/Small Drum Room.wav"/>
+      <FILE id="gh1wYk" name="Small Prehistoric Cave.wav" compile="0" resource="1"
+            file="IR/Small Prehistoric Cave.wav"/>
+      <FILE id="SYodnj" name="St Nicolaes Church.wav" compile="0" resource="1"
+            file="IR/St Nicolaes Church.wav"/>
+      <FILE id="q324B2" name="Trig Room.wav" compile="0" resource="1" file="IR/Trig Room.wav"/>
+      <FILE id="lK1JHr" name="Vocal Duo.wav" compile="0" resource="1" file="IR/Vocal Duo.wav"/>
+    </GROUP>
     <GROUP id="{43886E7F-1F59-2806-8A65-6A94D9549CC4}" name="Source">
       <FILE id="oFlsfl" name="Convolution.cpp" compile="1" resource="0" file="Source/Convolution.cpp"/>
       <FILE id="slJPev" name="Convolution.h" compile="0" resource="0" file="Source/Convolution.h"/>
