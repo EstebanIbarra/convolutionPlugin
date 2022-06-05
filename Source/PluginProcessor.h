@@ -57,14 +57,20 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     //==============================================================================
+    void validateConvolutionState(int sourceIRState, int internalIRState);
+    
+    //==============================================================================
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessor);
+    juce::dsp::ProcessSpec spec;
     juce::AudioBuffer<float> dryBuffer;
     Convolution convolution;
     Limiter limiter;
     std::unique_ptr<DryWet> dryWet;
+    int sourceIndexState;
+    int internalIRIndexState;
 };

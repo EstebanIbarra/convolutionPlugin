@@ -34,7 +34,49 @@ ConvolutionPluginAudioProcessor::~ConvolutionPluginAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout ConvolutionPluginAudioProcessor::createParameters()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout parameters;
-    
+    const juce::StringArray choices = juce::StringArray("Internal", "External", "Audio Bus");
+    parameters.add(std::make_unique<juce::AudioParameterChoice>("IR_SOURCE", "Impulse Source", choices, 0));
+    const juce::StringArray internalIRNames = juce::StringArray(
+        "Block Inside",
+        "Bottle Hall",
+        "Cement Blocks 1",
+        "Cement Blocks 2",
+        "Chateau de Logne Outside",
+        "Conic Long Echo Hall",
+        "Deep Space",
+        "Derlon Sanctuary",
+        "Direct Cabinet 1",
+        "Direct Cabinet 2",
+        "Direct Cabinet 3",
+        "Direct Cabinet 4",
+        "Five Columns Long",
+        "Five Columns",
+        "French 18th Century Salon",
+        "Going Home",
+        "Greek 7 Echo Hall",
+        "Highly Damped Large Room",
+        "In The Silo Revised",
+        "In The Silo",
+        "Large Bottle Hall",
+        "Large Long Echo Hall",
+        "Large Wide Echo Hall",
+        "Masonic Lodge",
+        "Musikcereinsaal",
+        "Narrow Bumpy Space",
+        "Nice Drum Room",
+        "On a Star",
+        "Parking Garage",
+        "Rays",
+        "Right Glass Triangle",
+        "Ruby Room",
+        "Scala Milan Opera Hall",
+        "Small Drum Room",
+        "Small Prehistoric Cave",
+        "St Nicolaes Church",
+        "Trig Room",
+        "Vocal Duo"
+    );
+    parameters.add(std::make_unique<juce::AudioParameterChoice>("INTERNAL_IR", "Impulse Response", internalIRNames, 0));
     parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "Limiter I/O", false));
     parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "Limiter Threshold", -12.0f, 2.0f, 0.0f));
     parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "Limiter Release", 1.0f, 4000.0f, 1000.0f));
@@ -112,14 +154,17 @@ void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samp
     dryBuffer.clear();
     
 //    Initializes specs
-    juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getTotalNumInputChannels();
     
 //    Prepares Audio Classes
-    convolution.prepare(spec);
+    convolution.prepareManager(spec, apvts);
     limiter.prepare(spec);
+    
+//    Stores the state of the IR_SOURCE and INTERNAL_IR parameters
+    sourceIndexState = apvts.getRawParameterValue("IR_SOURCE")->load();
+    internalIRIndexState = apvts.getRawParameterValue("INTERNAL_IR")->load();
 }
 
 void ConvolutionPluginAudioProcessor::releaseResources()
@@ -162,6 +207,7 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     dryBuffer.makeCopyOf(buffer);
+    this->validateConvolutionState(apvts.getRawParameterValue("IR_SOURCE")->load(), apvts.getRawParameterValue("INTERNAL_IR")->load());
     convolution.process(buffer, apvts);
     if (apvts.getRawParameterValue("LIMITER_BYPASS")->load())
         limiter.process(buffer, apvts);
@@ -191,6 +237,16 @@ void ConvolutionPluginAudioProcessor::setStateInformation (const void* data, int
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+//==============================================================================
+void ConvolutionPluginAudioProcessor::validateConvolutionState(int sourceIRState, int internalIRState)
+{
+    if (sourceIRState != sourceIndexState || internalIRState != internalIRIndexState) {
+        convolution.prepareManager(spec, apvts);
+        sourceIndexState = sourceIRState;
+        internalIRIndexState = internalIRState;
+    }
 }
 
 //==============================================================================
