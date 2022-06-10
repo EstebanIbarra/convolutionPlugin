@@ -19,32 +19,30 @@ public:
     
     /**
      Initializes Juce Convolution
-     @param juce::dsp::ProcessSpec &spec
      @return void
      */
-    void prepare(juce::dsp::ProcessSpec &spec);
+    void prepare();
     
     /**
      Prepares the Class for using any internal IR
-     @param juce::dsp::ProcessSpec &spec
      @param juce::AudioProcessorValueTreeState &apvts
      @return void
      */
-    void prepareInternalIR(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts);
+    void prepareInternalIR(juce::AudioProcessorValueTreeState &apvts);
     
     /**
      Prepares the Class for using any external IR
      @param juce::dsp::ProcessSpec &spec
      @return void
      */
-    void prepareExternalIR(juce::dsp::ProcessSpec &spec);
+    void prepareExternalIR();
     
     /**
      Prepares the Class for using any bus IR
-     @param juce::dsp::ProcessSpec &spec
+     @param juce::AudioBuffer<float> &busBuffer
      @return void
      */
-    void prepareBusIR(juce::dsp::ProcessSpec &spec);
+    void prepareBusIR(juce::AudioBuffer<float> &busBuffer);
     
     /**
      Prepares the Class for using any bus IR
@@ -56,15 +54,17 @@ public:
     
     /**
      Preprocess the Audio Buffer
-     @param juce::AudioBuffer<float> &inputBuffer
+     @param juce::AudioBuffer<float> &mainBuffer
+     @param juce::AudioBuffer<float> &busBuffer
      @param juce::AudioProcessorValueTreeState &apvts
      @return void
      */
-    void process(juce::AudioBuffer<float> &inputBuffer, juce::AudioProcessorValueTreeState &apvts);
+    void process(juce::AudioBuffer<float> &mainBuffer, juce::AudioBuffer<float> &busBuffer, juce::AudioProcessorValueTreeState &apvts);
     
 private:
     juce::dsp::Convolution juceConvolution;
     juce::File impulseFile;
+    juce::dsp::ProcessSpec referenceSpec;
     const char * binaryIRWav[38] {
         BinaryData::Block_Inside_wav,
         BinaryData::Bottle_Hall_wav,

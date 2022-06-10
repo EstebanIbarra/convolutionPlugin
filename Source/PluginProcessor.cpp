@@ -16,6 +16,7 @@ ConvolutionPluginAudioProcessor::ConvolutionPluginAudioProcessor()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
+                       .withInput  ("ConvolutionInput", juce::AudioChannelSet::stereo(), true)
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
@@ -169,8 +170,6 @@ void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samp
 
 void ConvolutionPluginAudioProcessor::releaseResources()
 {
-    convolution.~Convolution();
-    limiter.~Limiter();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -206,12 +205,19 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-    dryBuffer.makeCopyOf(buffer);
-    this->validateConvolutionState(apvts.getRawParameterValue("IR_SOURCE")->load(), apvts.getRawParameterValue("INTERNAL_IR")->load());
-    convolution.process(buffer, apvts);
+    
+//    Sets the main and the bus buffer
+    juce::AudioBuffer<float> mainBuffer = getBusBuffer (buffer, true, 0);
+    juce::AudioBuffer<float> busBuffer  = getBusBuffer (buffer, true, 1);
+    
+    dryBuffer.makeCopyOf(mainBuffer);
+    int sourceIRIndex = apvts.getRawParameterValue("IR_SOURCE")->load();
+    this->validateConvolutionState(sourceIRIndex, apvts.getRawParameterValue("INTERNAL_IR")->load());
+    // internal 0, external 1, bus 2
+    convolution.process(mainBuffer, busBuffer, apvts);
     if (apvts.getRawParameterValue("LIMITER_BYPASS")->load())
-        limiter.process(buffer, apvts);
-    dryWet->process(buffer, dryBuffer, apvts);
+        limiter.process(mainBuffer, apvts);
+    dryWet->process(mainBuffer, dryBuffer, apvts);
 }
 
 //==============================================================================
