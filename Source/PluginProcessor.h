@@ -12,6 +12,7 @@
 #include "Convolution.h"
 #include "Limiter.h"
 #include "DryWet.h"
+#include "EnvVars.h"
 
 //==============================================================================
 /**

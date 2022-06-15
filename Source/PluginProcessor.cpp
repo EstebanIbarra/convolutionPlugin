@@ -35,49 +35,8 @@ ConvolutionPluginAudioProcessor::~ConvolutionPluginAudioProcessor()
 juce::AudioProcessorValueTreeState::ParameterLayout ConvolutionPluginAudioProcessor::createParameters()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout parameters;
-    const juce::StringArray choices = juce::StringArray("Internal", "External", "Audio Bus");
-    parameters.add(std::make_unique<juce::AudioParameterChoice>("IR_SOURCE", "Impulse Source", choices, 0));
-    const juce::StringArray internalIRNames = juce::StringArray(
-        "Block Inside",
-        "Bottle Hall",
-        "Cement Blocks 1",
-        "Cement Blocks 2",
-        "Chateau de Logne Outside",
-        "Conic Long Echo Hall",
-        "Deep Space",
-        "Derlon Sanctuary",
-        "Direct Cabinet 1",
-        "Direct Cabinet 2",
-        "Direct Cabinet 3",
-        "Direct Cabinet 4",
-        "Five Columns Long",
-        "Five Columns",
-        "French 18th Century Salon",
-        "Going Home",
-        "Greek 7 Echo Hall",
-        "Highly Damped Large Room",
-        "In The Silo Revised",
-        "In The Silo",
-        "Large Bottle Hall",
-        "Large Long Echo Hall",
-        "Large Wide Echo Hall",
-        "Masonic Lodge",
-        "Musikcereinsaal",
-        "Narrow Bumpy Space",
-        "Nice Drum Room",
-        "On a Star",
-        "Parking Garage",
-        "Rays",
-        "Right Glass Triangle",
-        "Ruby Room",
-        "Scala Milan Opera Hall",
-        "Small Drum Room",
-        "Small Prehistoric Cave",
-        "St Nicolaes Church",
-        "Trig Room",
-        "Vocal Duo"
-    );
-    parameters.add(std::make_unique<juce::AudioParameterChoice>("INTERNAL_IR", "Impulse Response", internalIRNames, 0));
+    parameters.add(std::make_unique<juce::AudioParameterChoice>("IR_SOURCE", "Impulse Source", EnvVars::getSourceOptions(), 0));
+    parameters.add(std::make_unique<juce::AudioParameterChoice>("INTERNAL_IR", "Impulse Response", EnvVars::getinternalIROptions(), 0));
     parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "Limiter I/O", true));
     parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "Limiter Threshold", -12.0f, 2.0f, 0.0f));
     parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "Limiter Release", 1.0f, 4000.0f, 1000.0f));

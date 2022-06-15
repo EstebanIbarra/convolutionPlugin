@@ -14,9 +14,11 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
     addAndMakeVisible(sourceIR);
+    sourceIR.addItemList(EnvVars::getSourceOptions(), 1);
     attachmentSourceIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "IR_SOURCE", sourceIR);
     
     addAndMakeVisible(internalIR);
+    internalIR.addItemList(EnvVars::getinternalIROptions(), 1);
     attachmentInternalIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "INTERNAL_IR", internalIR);
     
     addAndMakeVisible(limiterIO);
@@ -60,7 +62,6 @@ void ConvolutionPluginAudioProcessorEditor::resized()
     const float sliderWidth = 0.55f;
     const float sliderHeight = 0.05f;
     sourceIR.setBoundsRelative(leftMargin, 0.02f, comboBoxWidth, comboBoxHeight);
-    
     internalIR.setBoundsRelative(leftMargin, comboBoxHeight + 0.05f, comboBoxWidth, comboBoxHeight);
     limiterIO.setBoundsRelative(leftMargin, 0.6f, 0.1, 0.1);
     limiterThreshold.setBoundsRelative(0.2f, 0.5f, sliderWidth, sliderHeight);

@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "EnvVars.h"
 
 //==============================================================================
 /**
@@ -29,9 +30,6 @@ private:
     
     juce::ComboBox sourceIR;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentSourceIR;
-    
-    juce::ComboBox busChannel;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentBusChannel;
     
     juce::ComboBox internalIR;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentInternalIR;
