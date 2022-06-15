@@ -19,11 +19,6 @@ void Convolution::prepare()
     juceConvolution.reset();
     juceConvolution.prepare(referenceSpec);
     
-    test1.setSize(1, 360);
-    for (int i = 0; i < 360; i++) {
-//        DBG(i);
-        test1.setSample(0, i, testBufferData[i]);
-    }
 
 }
 
@@ -68,9 +63,7 @@ void Convolution::prepareBusIR(juce::AudioBuffer<float> &busBuffer)
     this->prepare();
     const juce::dsp::Convolution::Stereo isStereo = referenceSpec.numChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
     
-    juceConvolution.loadImpulseResponse(std::move(test1), referenceSpec.sampleRate, isStereo, juce::dsp::Convolution::Trim::yes, juce::dsp::Convolution::Normalise::no);
-    
-//    juceConvolution.loadImpulseResponse(std::move(busBuffer), referenceSpec.sampleRate, isStereo, juce::dsp::Convolution::Trim::yes, juce::dsp::Convolution::Normalise::no);
+    juceConvolution.loadImpulseResponse(std::move(busBuffer), referenceSpec.sampleRate, isStereo, juce::dsp::Convolution::Trim::yes, juce::dsp::Convolution::Normalise::no);
 }
 
 void Convolution::prepareManager(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts)
