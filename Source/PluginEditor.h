@@ -25,9 +25,28 @@ public:
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
     ConvolutionPluginAudioProcessor& audioProcessor;
+    
+    juce::ComboBox sourceIR;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentSourceIR;
+    
+    juce::ComboBox busChannel;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentBusChannel;
+    
+    juce::ComboBox internalIR;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentInternalIR;
+    
+    juce::ToggleButton limiterIO;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> attachmentLimiterIO;
+    
+    juce::Slider limiterThreshold;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachmentLimiterThreshold;
+    
+    juce::Slider limiterRelease;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachmentLimiterRelease;
+    
+    juce::Slider dryWet;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachmentDryWet;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessorEditor)
 };

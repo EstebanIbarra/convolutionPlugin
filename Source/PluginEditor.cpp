@@ -13,9 +13,28 @@
 ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (ConvolutionPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (400, 300);
+    addAndMakeVisible(sourceIR);
+    attachmentSourceIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "IR_SOURCE", sourceIR);
+    
+    addAndMakeVisible(internalIR);
+    attachmentInternalIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "INTERNAL_IR", internalIR);
+    
+    addAndMakeVisible(limiterIO);
+    attachmentLimiterIO = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "LIMITER_BYPASS", limiterIO);
+    
+    addAndMakeVisible(limiterThreshold);
+    limiterThreshold.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    attachmentLimiterThreshold = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LIMITER_THRESHOLD", limiterThreshold);
+    
+    addAndMakeVisible(limiterRelease);
+    limiterRelease.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    attachmentLimiterRelease = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LIMITER_RELEASE", limiterRelease);
+    
+    addAndMakeVisible(dryWet);
+    dryWet.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+    attachmentDryWet = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DRY_WET", dryWet);
+    
+    setSize (500, 500);
 }
 
 ConvolutionPluginAudioProcessorEditor::~ConvolutionPluginAudioProcessorEditor()
@@ -35,6 +54,16 @@ void ConvolutionPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
 void ConvolutionPluginAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    const float leftMargin = 0.02f;
+    const float comboBoxWidth = 0.6f;
+    const float comboBoxHeight = 0.05f;
+    const float sliderWidth = 0.55f;
+    const float sliderHeight = 0.05f;
+    sourceIR.setBoundsRelative(leftMargin, 0.02f, comboBoxWidth, comboBoxHeight);
+    
+    internalIR.setBoundsRelative(leftMargin, comboBoxHeight + 0.05f, comboBoxWidth, comboBoxHeight);
+    limiterIO.setBoundsRelative(leftMargin, 0.6f, 0.1, 0.1);
+    limiterThreshold.setBoundsRelative(0.2f, 0.5f, sliderWidth, sliderHeight);
+    limiterRelease.setBoundsRelative(0.2f, 0.55f + sliderHeight, sliderWidth, sliderHeight);
+    dryWet.setBoundsRelative(leftMargin, 0.7f, 0.3f, 0.3f);
 }
