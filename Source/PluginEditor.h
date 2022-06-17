@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "EnvVars.h"
+#include "DragAndDropVisualiser.h"
 
 //==============================================================================
 /**
@@ -30,6 +31,8 @@ private:
     
     juce::ComboBox sourceIR;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentSourceIR;
+    
+    DragAndDropVisualiser dragAndDropComponent;
     
     juce::ComboBox internalIR;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> attachmentInternalIR;

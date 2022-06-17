@@ -11,11 +11,13 @@
 
 //==============================================================================
 ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (ConvolutionPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p), dragAndDropComponent(p)
 {
     addAndMakeVisible(sourceIR);
     sourceIR.addItemList(EnvVars::getSourceOptions(), 1);
     attachmentSourceIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "IR_SOURCE", sourceIR);
+    
+    addAndMakeVisible(dragAndDropComponent);
     
     addAndMakeVisible(internalIR);
     internalIR.addItemList(EnvVars::getinternalIROptions(), 1);
@@ -36,7 +38,7 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     dryWet.setSliderStyle(juce::Slider::SliderStyle::Rotary);
     attachmentDryWet = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DRY_WET", dryWet);
     
-    setSize (500, 500);
+    setSize (400, 400);
 }
 
 ConvolutionPluginAudioProcessorEditor::~ConvolutionPluginAudioProcessorEditor()
@@ -51,20 +53,30 @@ void ConvolutionPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void ConvolutionPluginAudioProcessorEditor::resized()
 {
-    const float leftMargin = 0.02f;
+    const float spacing = 0.04f;
+    const float leftMarginOffset = 0.2f;
+    const float horizontalElementsHeight = 0.06f;
     const float comboBoxWidth = 0.6f;
-    const float comboBoxHeight = 0.05f;
-    const float sliderWidth = 0.55f;
-    const float sliderHeight = 0.05f;
-    sourceIR.setBoundsRelative(leftMargin, 0.02f, comboBoxWidth, comboBoxHeight);
-    internalIR.setBoundsRelative(leftMargin, comboBoxHeight + 0.05f, comboBoxWidth, comboBoxHeight);
-    limiterIO.setBoundsRelative(leftMargin, 0.6f, 0.1, 0.1);
-    limiterThreshold.setBoundsRelative(0.2f, 0.5f, sliderWidth, sliderHeight);
-    limiterRelease.setBoundsRelative(0.2f, 0.55f + sliderHeight, sliderWidth, sliderHeight);
-    dryWet.setBoundsRelative(leftMargin, 0.7f, 0.3f, 0.3f);
+    const float dragAndDropWidth = 1.0f - 2.0f * spacing;
+    const float dragAndDropHeight = 0.2f;
+    const float sliderWidth = 1.0f - (leftMarginOffset);
+    float proportionalY = spacing;
+    sourceIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
+    proportionalY += horizontalElementsHeight + spacing;
+    dragAndDropComponent.setBoundsRelative(spacing, proportionalY, dragAndDropWidth, dragAndDropHeight);
+    proportionalY += dragAndDropHeight + spacing;
+    internalIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
+    proportionalY += horizontalElementsHeight + spacing;
+    limiterIO.setBoundsRelative(leftMarginOffset / 2.7f, proportionalY + spacing / 2, 0.1f, 0.1f);
+    limiterThreshold.setBoundsRelative(leftMarginOffset, proportionalY, sliderWidth, horizontalElementsHeight);
+    proportionalY += horizontalElementsHeight + spacing;
+    limiterRelease.setBoundsRelative(leftMarginOffset, proportionalY, sliderWidth, horizontalElementsHeight);
+    proportionalY += horizontalElementsHeight + spacing;
+    dryWet.setBoundsRelative(spacing, proportionalY, 0.28f, 0.28f);
+    proportionalY += 0.28f + spacing;
+    DBG("Total Y = " << proportionalY);
 }
