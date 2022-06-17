@@ -18,12 +18,6 @@ public:
     ~FileManager();
     
     /**
-     Creates folder structure
-     @return void
-     */
-    void createFolderStructure();
-    
-    /**
      Copies a file to the Application Data folder
      @param juce::String &absolutePath
      @return void
@@ -44,6 +38,12 @@ public:
     juce::File getApplicationDataFolder();
     
 private:
+    /**
+     Creates folder structure
+     @return void
+     */
+    void createFolderStructure();
+    
     juce::File applicationDataFolder;
     juce::StringArray dirs {
         JucePlugin_Name,

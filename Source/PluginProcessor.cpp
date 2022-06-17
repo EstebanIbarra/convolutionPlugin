@@ -20,7 +20,7 @@ ConvolutionPluginAudioProcessor::ConvolutionPluginAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       ), apvts(*this, nullptr, "parameters", createParameters())
+                       ), apvts(*this, nullptr, "parameters", createParameters()), fileManager()
 #endif
 {
     dryWet = std::make_unique<DryWet>();
@@ -119,7 +119,7 @@ void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samp
     spec.numChannels = getTotalNumInputChannels();
     
 //    Prepares Audio Classes
-    convolution.prepareManager(spec, apvts);
+    convolution.prepareManager(spec, apvts, fileManager.getApplicationDataFolder());
     limiter.prepare(spec);
     
 //    Stores the state of the IR_SOURCE and INTERNAL_IR parameters
@@ -208,7 +208,7 @@ void ConvolutionPluginAudioProcessor::setStateInformation (const void* data, int
 void ConvolutionPluginAudioProcessor::validateConvolutionState(int sourceIRState, int internalIRState)
 {
     if (sourceIRState != sourceIndexState || internalIRState != internalIRIndexState) {
-        convolution.prepareManager(spec, apvts);
+        convolution.prepareManager(spec, apvts, fileManager.getApplicationDataFolder());
         sourceIndexState = sourceIRState;
         internalIRIndexState = internalIRState;
     }

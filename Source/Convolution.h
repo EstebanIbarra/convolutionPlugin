@@ -32,10 +32,12 @@ public:
     
     /**
      Prepares the Class for using any external IR
-     @param juce::dsp::ProcessSpec &spec
+     @param juce::AudioProcessorValueTreeState &apvts
+     @param juce::File &applicationDataFolder
+     @param juce::String &fileName
      @return void
      */
-    void prepareExternalIR();
+    void prepareExternalIR(juce::AudioProcessorValueTreeState &apvts, const juce::File &applicationDataFolder, const juce::String &fileName = "", const int &irNumChannels = 1);
     
     /**
      Prepares the Class for using any bus IR
@@ -50,7 +52,7 @@ public:
      @param juce::AudioProcessorValueTreeState &apvts
      @return void
      */
-    void prepareManager(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts);
+    void prepareManager(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts, const juce::File &applicationDataFolder);
     
     /**
      Preprocess the Audio Buffer
@@ -63,6 +65,7 @@ public:
     
 private:
     juce::dsp::Convolution juceConvolution;
+    juce::File appData;
     juce::File impulseFile;
     juce::dsp::ProcessSpec referenceSpec;
     const char *binaryIRWav[38] {

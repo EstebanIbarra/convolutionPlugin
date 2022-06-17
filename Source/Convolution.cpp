@@ -24,7 +24,7 @@ void Convolution::prepare()
 
 void Convolution::prepareInternalIR(juce::AudioProcessorValueTreeState &apvts)
 {
-    this->prepare();
+    prepare();
     
     int internalIRIndex = apvts.getRawParameterValue("INTERNAL_IR")->load();
     juceConvolution.loadImpulseResponse(
@@ -37,48 +37,46 @@ void Convolution::prepareInternalIR(juce::AudioProcessorValueTreeState &apvts)
     );
 }
 
-void Convolution::prepareExternalIR()
+void Convolution::prepareExternalIR(juce::AudioProcessorValueTreeState &apvts, const juce::File &applicationDataFolder, const juce::String &fileName, const int &irNumChannels)
 {
-    /* TODO: Copy file from drag and drop into TBD folder */
+    appData = applicationDataFolder;
     
-    //    Gets impulse path for user defined IRs
-    juce::String impulsePath = juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory).getFullPathName() + "/impulse.wav";
-    impulseFile = juce::File(impulsePath);
-    
-    /* TODO: Find a way to get the numChannels from File */
-    uint8_t irNumChannels = 1;
-    
-    //    Defines if IR is stereo and if requires trimming
-    const juce::dsp::Convolution::Stereo isStereo = irNumChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
-    const juce::dsp::Convolution::Trim requiresTrimming = juce::dsp::Convolution::Trim::yes;
-    
-    this->prepare();
-    
-    //    Loads User defined IR
-    juceConvolution.loadImpulseResponse(impulseFile.getFullPathName(), isStereo, requiresTrimming, impulseFile.getSize());
+    if (fileName != "") {
+        juce::String impulsePath = juce::File::addTrailingSeparator(appData.getFullPathName()) + fileName;
+        impulseFile = juce::File(impulsePath);
+     
+        const juce::dsp::Convolution::Stereo isStereo = irNumChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
+        const juce::dsp::Convolution::Trim requiresTrimming = juce::dsp::Convolution::Trim::yes;
+        
+        prepare();
+        
+        juceConvolution.loadImpulseResponse(impulseFile.getFullPathName(), isStereo, requiresTrimming, impulseFile.getSize());
+    } else {
+        prepare();
+    }
 }
 
 void Convolution::prepareBusIR(juce::AudioBuffer<float> &busBuffer)
 {
-    this->prepare();
+    prepare();
     const juce::dsp::Convolution::Stereo isStereo = referenceSpec.numChannels == 2 ? juce::dsp::Convolution::Stereo::yes : juce::dsp::Convolution::Stereo::no;
     
     juceConvolution.loadImpulseResponse(std::move(busBuffer), referenceSpec.sampleRate, isStereo, juce::dsp::Convolution::Trim::yes, juce::dsp::Convolution::Normalise::no);
 }
 
-void Convolution::prepareManager(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts)
+void Convolution::prepareManager(juce::dsp::ProcessSpec &spec, juce::AudioProcessorValueTreeState &apvts, const juce::File &applicationDataFolder)
 {
     referenceSpec = spec;
     int sourceIndex = apvts.getRawParameterValue("IR_SOURCE")->load();
     switch (sourceIndex) {
         case 0:
-            this->prepareInternalIR(apvts);
+            prepareInternalIR(apvts);
             break;
         case 1:
-            this->prepareExternalIR();
+            prepareExternalIR(apvts, applicationDataFolder);
             break;
         default:
-            this->prepare();
+            prepare();
             break;
     }
 }
@@ -87,7 +85,7 @@ void Convolution::process(juce::AudioBuffer<float> &mainBuffer, juce::AudioBuffe
 {
     int sourceIndex = apvts.getRawParameterValue("IR_SOURCE")->load();
     if (sourceIndex == 2)
-        this->prepareBusIR(busBuffer);
+        prepareBusIR(busBuffer);
     juce::dsp::AudioBlock<float> audioBlock(mainBuffer);
     juce::dsp::ProcessContextReplacing<float> context(audioBlock);
     juceConvolution.process(context);

@@ -13,6 +13,7 @@
 #include "Limiter.h"
 #include "DryWet.h"
 #include "EnvVars.h"
+#include "FileManager.h"
 
 //==============================================================================
 /**
@@ -63,13 +64,14 @@ public:
     //==============================================================================
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
+    Convolution convolution;
+    FileManager fileManager;
 
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessor);
     juce::dsp::ProcessSpec spec;
     juce::AudioBuffer<float> dryBuffer;
-    Convolution convolution;
     Limiter limiter;
     std::unique_ptr<DryWet> dryWet;
     int sourceIndexState;
