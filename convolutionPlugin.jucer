@@ -76,14 +76,26 @@
       <FILE id="lK1JHr" name="Vocal Duo.wav" compile="0" resource="1" file="IR/Vocal Duo.wav"/>
     </GROUP>
     <GROUP id="{43886E7F-1F59-2806-8A65-6A94D9549CC4}" name="Source">
-      <FILE id="oFlsfl" name="Convolution.cpp" compile="1" resource="0" file="Source/Convolution.cpp"/>
-      <FILE id="slJPev" name="Convolution.h" compile="0" resource="0" file="Source/Convolution.h"/>
-      <FILE id="NAsmrA" name="DryWet.cpp" compile="1" resource="0" file="Source/DryWet.cpp"/>
-      <FILE id="fANARJ" name="DryWet.h" compile="0" resource="0" file="Source/DryWet.h"/>
-      <FILE id="xmhM8Z" name="EnvVars.cpp" compile="1" resource="0" file="Source/EnvVars.cpp"/>
-      <FILE id="rDGFW7" name="EnvVars.h" compile="0" resource="0" file="Source/EnvVars.h"/>
-      <FILE id="nPWQ61" name="Limiter.cpp" compile="1" resource="0" file="Source/Limiter.cpp"/>
-      <FILE id="moEoRR" name="Limiter.h" compile="0" resource="0" file="Source/Limiter.h"/>
+      <GROUP id="{B6DBE771-00B8-35AA-3FBE-3E71627A57B1}" name="DSP">
+        <FILE id="oFlsfl" name="Convolution.cpp" compile="1" resource="0" file="Source/Convolution.cpp"/>
+        <FILE id="slJPev" name="Convolution.h" compile="0" resource="0" file="Source/Convolution.h"/>
+        <FILE id="NAsmrA" name="DryWet.cpp" compile="1" resource="0" file="Source/DryWet.cpp"/>
+        <FILE id="fANARJ" name="DryWet.h" compile="0" resource="0" file="Source/DryWet.h"/>
+        <FILE id="nPWQ61" name="Limiter.cpp" compile="1" resource="0" file="Source/Limiter.cpp"/>
+        <FILE id="moEoRR" name="Limiter.h" compile="0" resource="0" file="Source/Limiter.h"/>
+      </GROUP>
+      <GROUP id="{496F79F3-749B-2570-8FC0-CF848A6BD916}" name="GUI">
+        <FILE id="quepmD" name="DragAndDropVisualiser.cpp" compile="1" resource="0"
+              file="Source/DragAndDropVisualiser.cpp"/>
+        <FILE id="x4mwUp" name="DragAndDropVisualiser.h" compile="0" resource="0"
+              file="Source/DragAndDropVisualiser.h"/>
+      </GROUP>
+      <GROUP id="{01CB08E9-A1B0-1EC6-0F69-A34404CD61F3}" name="Utilities">
+        <FILE id="xmhM8Z" name="EnvVars.cpp" compile="1" resource="0" file="Source/EnvVars.cpp"/>
+        <FILE id="rDGFW7" name="EnvVars.h" compile="0" resource="0" file="Source/EnvVars.h"/>
+        <FILE id="xoBhxT" name="FileManager.cpp" compile="1" resource="0" file="Source/FileManager.cpp"/>
+        <FILE id="yqn9cK" name="FileManager.h" compile="0" resource="0" file="Source/FileManager.h"/>
+      </GROUP>
       <FILE id="gq0e53" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="J3NzFp" name="PluginProcessor.h" compile="0" resource="0"
