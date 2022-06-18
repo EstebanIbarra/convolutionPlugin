@@ -80,7 +80,7 @@ void DragAndDropVisualiser::filesDropped(const juce::StringArray &files, int x, 
             auto fileReader = formatManager.createReaderFor(ogFile);
             auto channelLayout = fileReader->getChannelLayout();
             
-            
+            changeSourceIR();
             audioProcessor.convolution.prepareExternalIR(
                  audioProcessor.apvts,
                  audioProcessor.fileManager.getApplicationDataFolder(),
@@ -95,3 +95,4 @@ void DragAndDropVisualiser::drawAudioWave()
 {
     
 }
+

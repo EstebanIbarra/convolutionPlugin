@@ -19,7 +19,7 @@
 class DragAndDropVisualiser  : public juce::Component, public juce::FileDragAndDropTarget
 {
 public:
-    DragAndDropVisualiser(ConvolutionPluginAudioProcessor&);
+    DragAndDropVisualiser(ConvolutionPluginAudioProcessor &p);
     ~DragAndDropVisualiser() override;
     
     void paint (juce::Graphics&) override;
@@ -53,7 +53,9 @@ public:
      @param TBD
      @return void
      */
-    void drawAudioWave ();
+    void drawAudioWave();
+    
+    std::function<void()> changeSourceIR;
     
 private:
     ConvolutionPluginAudioProcessor &audioProcessor;

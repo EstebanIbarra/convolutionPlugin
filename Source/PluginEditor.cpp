@@ -18,6 +18,9 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     attachmentSourceIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "IR_SOURCE", sourceIR);
     
     addAndMakeVisible(dragAndDropComponent);
+    dragAndDropComponent.changeSourceIR = [this] () {
+        sourceIR.setSelectedItemIndex(1);
+    };
     
     addAndMakeVisible(internalIR);
     internalIR.addItemList(EnvVars::getinternalIROptions(), 1);
@@ -78,5 +81,4 @@ void ConvolutionPluginAudioProcessorEditor::resized()
     proportionalY += horizontalElementsHeight + spacing;
     dryWet.setBoundsRelative(spacing, proportionalY, 0.28f, 0.28f);
     proportionalY += 0.28f + spacing;
-    DBG("Total Y = " << proportionalY);
 }
