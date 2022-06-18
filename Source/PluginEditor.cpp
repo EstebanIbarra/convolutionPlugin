@@ -22,14 +22,17 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     
     addAndMakeVisible(limiterThreshold);
     limiterThreshold.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    limiterThreshold.setSkewFactor(1.7f);
     attachmentLimiterThreshold = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LIMITER_THRESHOLD", limiterThreshold);
     
     addAndMakeVisible(limiterRelease);
     limiterRelease.setSliderStyle(juce::Slider::SliderStyle::LinearHorizontal);
+    limiterRelease.setSkewFactor(0.3f);
     attachmentLimiterRelease = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "LIMITER_RELEASE", limiterRelease);
     
     addAndMakeVisible(dryWet);
     dryWet.setSliderStyle(juce::Slider::SliderStyle::Rotary);
+    dryWet.setTextBoxStyle(juce::Slider::NoTextBox, true, 0, 0);
     attachmentDryWet = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DRY_WET", dryWet);
     
     addAndMakeVisible(levelMeterL);
@@ -55,7 +58,7 @@ void ConvolutionPluginAudioProcessorEditor::paint (juce::Graphics& g)
 void ConvolutionPluginAudioProcessorEditor::resized()
 {
     const float spacing = 0.04f;
-    const float leftMarginOffset = 0.2f;
+    const float leftMarginOffset = 0.2f + spacing / 2;
     const float slidersWidth = 1.0f - (leftMarginOffset + spacing / 2.0f);
     const float levelMeterWidth = 1.0f - (leftMarginOffset + spacing);
     const float horizontalElementsHeight = 0.06f;
@@ -81,7 +84,7 @@ void ConvolutionPluginAudioProcessorEditor::resized()
     proportionalY += horizontalElementsHeight + spacing;
     
     if (audioProcessor.getMainBufferNumChannels() == 2) {
-        dryWet.setBoundsRelative(spacing, proportionalY, leftMarginOffset, leftMarginOffset + spacing / 2.0f);
+        dryWet.setBoundsRelative(spacing / 2.0f, proportionalY - spacing / 2.0f, 0.2f, 0.2f);
         levelMeterL.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, horizontalElementsHeight);
         proportionalY += horizontalElementsHeight + spacing / 2.0f;
         levelMeterR.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, horizontalElementsHeight);
