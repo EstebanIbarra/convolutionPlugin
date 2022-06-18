@@ -32,7 +32,7 @@ void FileManager::createFolderStructure()
 void FileManager::copyFileToApplicationData (const juce::String &absolutePath)
 {
     juce::File file = absolutePath;
-    file.copyFileTo(applicationDataFolder.getFullPathName());
+    file.copyFileTo(juce::File::addTrailingSeparator(applicationDataFolder.getFullPathName()) + file.getFileName());
 }
 
 void FileManager::setApplicationDataFolder(const juce::String &absolutePath)
