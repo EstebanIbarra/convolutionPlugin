@@ -29,16 +29,23 @@ void LevelMeter::paint (juce::Graphics& g)
     g.setColour(findColour(juce::Slider::ColourIds::backgroundColourId));
     g.fillRoundedRectangle(bounds, 5.0f);
     
-    g.setColour(findColour(juce::Slider::ColourIds::thumbColourId));
+    //g.setColour(findColour(juce::Slider::ColourIds::thumbColourId));
+    g.setGradientFill(gradient);
     const float scaledX = juce::jmap(level, -60.0f, 6.0f, 0.0f, static_cast<float>(getWidth()));
     g.fillRoundedRectangle(bounds.removeFromLeft(scaledX), 5.0f);
 }
 
 void LevelMeter::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
+    juce::Rectangle<float> bounds = getLocalBounds().toFloat();
+    gradient = juce::ColourGradient {
+        juce::Colours::green,
+        bounds.getRelativePoint(0.0f, 0.5f),
+        juce::Colours::red,
+        bounds.getRelativePoint(1.0f, 0.5f),
+        false
+    };
+    gradient.addColour(0.5f, juce::Colours::yellow);
 }
 
 void LevelMeter::setLevel(const float &value)

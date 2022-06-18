@@ -33,5 +33,6 @@ public:
 
 private:
     float level {-60.0f};
+    juce::ColourGradient gradient{};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LevelMeter)
 };
