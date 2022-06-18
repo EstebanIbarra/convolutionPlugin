@@ -34,6 +34,9 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     
     addAndMakeVisible(internalIR);
     internalIR.addItemList(EnvVars::getinternalIROptions(), 1);
+    internalIR.onChange = [this] () {
+        dragAndDropComponent.repaint();
+    };
     attachmentInternalIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "INTERNAL_IR", internalIR);
     
     addAndMakeVisible(limiterIO);

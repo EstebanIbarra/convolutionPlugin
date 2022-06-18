@@ -63,6 +63,26 @@ public:
      */
     void process(juce::AudioBuffer<float> &mainBuffer, juce::AudioBuffer<float> &busBuffer, juce::AudioProcessorValueTreeState &apvts);
     
+    /**
+     Gets the internal IR data
+     @param int &index
+     @return const char*
+     */
+    const char* getInternalIRData(const int &index);
+    
+    /**
+     Gets the internal IR size
+     @param juce::AudioProcessorValueTreeState &apvts
+     @return int char*
+     */
+    const int getInternalIRSize(const int &index);
+    
+    /**
+     Gets the current external IR File
+     @return juce::File
+     */
+    juce::File getCurrentExternalIR();
+    
 private:
     juce::dsp::Convolution juceConvolution;
     juce::File appData;

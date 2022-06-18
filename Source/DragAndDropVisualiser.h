@@ -49,16 +49,38 @@ public:
     void filesDropped (const juce::StringArray &files, int x, int y) override;
     
     /**
-     Draws the audio wave
-     @param TBD
+     Draws the External IR Component
+     @param juce::Graphics &g
      @return void
      */
-    void drawAudioWave();
+    void drawExternalIRWaveform(juce::Graphics &g);
     
+    /**
+     Draws the internal IR Component
+     @param juce::Graphics &g
+     @return void
+     */
+    void drawInternalIRCWaveform(juce::Graphics &g);
+    
+    /**
+     Draws a waveform
+     @param juce::Graphics &g
+     @param bool isStereo, defaults to false
+     @return void
+     */
+    void drawWaveform(juce::Graphics &g, bool isStereo = false);
+    
+    /**
+     Changes the source IR
+     @return std::function<void>
+     */
     std::function<void()> changeSourceIR;
     
 private:
     ConvolutionPluginAudioProcessor &audioProcessor;
     juce::AudioFormatManager formatManager;
+    juce::AudioBuffer<float> waveformBuffer;
+    std::vector<float> audioSamplesL;
+    std::vector<float> audioSamplesR;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DragAndDropVisualiser)
 };

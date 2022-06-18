@@ -90,3 +90,18 @@ void Convolution::process(juce::AudioBuffer<float> &mainBuffer, juce::AudioBuffe
     juce::dsp::ProcessContextReplacing<float> context(audioBlock);
     juceConvolution.process(context);
 }
+
+const char* Convolution::getInternalIRData(const int &index)
+{
+    return binaryIRWav[index];
+}
+
+const int Convolution::getInternalIRSize(const int &index)
+{
+    return binaryIRWavSize[index];
+}
+
+juce::File Convolution::getCurrentExternalIR()
+{
+    return impulseFile;
+}
