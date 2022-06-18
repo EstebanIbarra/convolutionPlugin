@@ -29,7 +29,9 @@ void LevelMeter::paint (juce::Graphics& g)
     g.setColour(findColour(juce::ComboBox::backgroundColourId));
     g.fillRoundedRectangle(bounds, 5.0f);
     
-    //g.setColour(findColour(juce::Slider::ColourIds::thumbColourId));
+    g.setColour(juce::Colours::grey);
+    g.drawRoundedRectangle(bounds, 5.0f, 1.0f);
+    
     g.setGradientFill(gradient);
     const float scaledX = juce::jmap(level, -60.0f, 6.0f, 0.0f, static_cast<float>(getWidth()));
     g.fillRoundedRectangle(bounds.removeFromLeft(scaledX), 5.0f);
