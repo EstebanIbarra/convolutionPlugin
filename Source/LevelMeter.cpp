@@ -26,7 +26,7 @@ LevelMeter::~LevelMeter()
 void LevelMeter::paint (juce::Graphics& g)
 {
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
-    g.setColour(findColour(juce::Slider::ColourIds::backgroundColourId));
+    g.setColour(findColour(juce::ComboBox::backgroundColourId));
     g.fillRoundedRectangle(bounds, 5.0f);
     
     //g.setColour(findColour(juce::Slider::ColourIds::thumbColourId));
