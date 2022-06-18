@@ -1,15 +1,6 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
 ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (ConvolutionPluginAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), dragAndDropComponent(p)
 {
@@ -41,17 +32,20 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     dryWet.setSliderStyle(juce::Slider::SliderStyle::Rotary);
     attachmentDryWet = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.apvts, "DRY_WET", dryWet);
     
+    addAndMakeVisible(levelMeterL);
+    addAndMakeVisible(levelMeterR);
+    
     setSize (400, 400);
+    
+    startTimerHz(30);
 }
 
 ConvolutionPluginAudioProcessorEditor::~ConvolutionPluginAudioProcessorEditor()
 {
 }
 
-//==============================================================================
 void ConvolutionPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
@@ -62,23 +56,47 @@ void ConvolutionPluginAudioProcessorEditor::resized()
 {
     const float spacing = 0.04f;
     const float leftMarginOffset = 0.2f;
+    const float slidersWidth = 1.0f - (leftMarginOffset + spacing / 2.0f);
+    const float levelMeterWidth = 1.0f - (leftMarginOffset + spacing);
     const float horizontalElementsHeight = 0.06f;
     const float comboBoxWidth = 0.6f;
     const float dragAndDropWidth = 1.0f - 2.0f * spacing;
     const float dragAndDropHeight = 0.2f;
-    const float sliderWidth = 1.0f - (leftMarginOffset);
     float proportionalY = spacing;
+    
     sourceIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
     proportionalY += horizontalElementsHeight + spacing;
+    
     dragAndDropComponent.setBoundsRelative(spacing, proportionalY, dragAndDropWidth, dragAndDropHeight);
     proportionalY += dragAndDropHeight + spacing;
+    
     internalIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
     proportionalY += horizontalElementsHeight + spacing;
+    
     limiterIO.setBoundsRelative(leftMarginOffset / 2.7f, proportionalY + spacing / 2, 0.1f, 0.1f);
-    limiterThreshold.setBoundsRelative(leftMarginOffset, proportionalY, sliderWidth, horizontalElementsHeight);
+    limiterThreshold.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
     proportionalY += horizontalElementsHeight + spacing;
-    limiterRelease.setBoundsRelative(leftMarginOffset, proportionalY, sliderWidth, horizontalElementsHeight);
+    
+    limiterRelease.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
     proportionalY += horizontalElementsHeight + spacing;
-    dryWet.setBoundsRelative(spacing, proportionalY, 0.28f, 0.28f);
-    proportionalY += 0.28f + spacing;
+    
+    if (audioProcessor.getMainBufferNumChannels() == 2) {
+        dryWet.setBoundsRelative(spacing, proportionalY, leftMarginOffset, leftMarginOffset + spacing / 2.0f);
+        levelMeterL.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, horizontalElementsHeight);
+        proportionalY += horizontalElementsHeight + spacing / 2.0f;
+        levelMeterR.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, horizontalElementsHeight);
+        proportionalY += horizontalElementsHeight + spacing;
+    } else {
+        dryWet.setBoundsRelative(spacing, proportionalY, leftMarginOffset, leftMarginOffset);
+        levelMeterL.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, 2.0f * horizontalElementsHeight);
+        proportionalY += 2.0f * horizontalElementsHeight + spacing;
+    }
+}
+
+void ConvolutionPluginAudioProcessorEditor::timerCallback()
+{
+    levelMeterL.setLevel(audioProcessor.getRMSValue(0));
+    levelMeterR.setLevel(audioProcessor.getRMSValue(1));
+    levelMeterL.repaint();
+    levelMeterR.repaint();
 }

@@ -89,6 +89,8 @@
               file="Source/DragAndDropVisualiser.cpp"/>
         <FILE id="x4mwUp" name="DragAndDropVisualiser.h" compile="0" resource="0"
               file="Source/DragAndDropVisualiser.h"/>
+        <FILE id="n2sE24" name="LevelMeter.cpp" compile="1" resource="0" file="Source/LevelMeter.cpp"/>
+        <FILE id="BudrXL" name="LevelMeter.h" compile="0" resource="0" file="Source/LevelMeter.h"/>
       </GROUP>
       <GROUP id="{01CB08E9-A1B0-1EC6-0F69-A34404CD61F3}" name="Utilities">
         <FILE id="xmhM8Z" name="EnvVars.cpp" compile="1" resource="0" file="Source/EnvVars.cpp"/>

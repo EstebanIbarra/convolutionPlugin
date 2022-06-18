@@ -1,30 +1,20 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
 #pragma once
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "EnvVars.h"
 #include "DragAndDropVisualiser.h"
+#include "LevelMeter.h"
 
-//==============================================================================
-/**
-*/
-class ConvolutionPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
+class ConvolutionPluginAudioProcessorEditor  : public juce::AudioProcessorEditor, public juce::Timer
 {
 public:
     ConvolutionPluginAudioProcessorEditor (ConvolutionPluginAudioProcessor&);
     ~ConvolutionPluginAudioProcessorEditor() override;
 
-    //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void timerCallback() override;
 
 private:
     ConvolutionPluginAudioProcessor& audioProcessor;
@@ -48,6 +38,9 @@ private:
     
     juce::Slider dryWet;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> attachmentDryWet;
+    
+    LevelMeter levelMeterL;
+    LevelMeter levelMeterR;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessorEditor)
 };

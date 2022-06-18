@@ -61,6 +61,8 @@ public:
     //==============================================================================
     void validateConvolutionState(int sourceIRState, int internalIRState);
     
+    const int getMainBufferNumChannels();
+    float getRMSValue(const int &channel);
     //==============================================================================
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
@@ -68,12 +70,15 @@ public:
     FileManager fileManager;
 
 private:
-    //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessor);
     juce::dsp::ProcessSpec spec;
     juce::AudioBuffer<float> dryBuffer;
+    juce::AudioBuffer<float> mainBuffer;
+    juce::AudioBuffer<float> busBuffer;
     Limiter limiter;
     std::unique_ptr<DryWet> dryWet;
+    juce::LinearSmoothedValue<float> rmsLevelLeft;
+    juce::LinearSmoothedValue<float> rmsLevelRight;
     int sourceIndexState;
     int internalIRIndexState;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConvolutionPluginAudioProcessor);
 };

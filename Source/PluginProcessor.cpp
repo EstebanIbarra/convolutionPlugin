@@ -121,6 +121,12 @@ void ConvolutionPluginAudioProcessor::prepareToPlay (double sampleRate, int samp
 //    Prepares Audio Classes
     convolution.prepareManager(spec, apvts, fileManager.getApplicationDataFolder());
     limiter.prepare(spec);
+    rmsLevelLeft.reset(sampleRate, 0.5f);
+    rmsLevelRight.reset(sampleRate, 0.5f);
+    
+//    Sets the initial value for the RMS levels
+    rmsLevelLeft.setCurrentAndTargetValue(-100.0f);
+    rmsLevelRight.setCurrentAndTargetValue(-100.0f);
     
 //    Stores the state of the IR_SOURCE and INTERNAL_IR parameters
     sourceIndexState = apvts.getRawParameterValue("IR_SOURCE")->load();
@@ -164,19 +170,35 @@ void ConvolutionPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& bu
     auto totalNumOutputChannels = getTotalNumOutputChannels();
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
-    
-//    Sets the main and the bus buffer
-    juce::AudioBuffer<float> mainBuffer = getBusBuffer (buffer, true, 0);
-    juce::AudioBuffer<float> busBuffer  = getBusBuffer (buffer, true, 1);
+   
+    mainBuffer = getBusBuffer (buffer, true, 0);
+    busBuffer  = getBusBuffer (buffer, true, 1);
     
     dryBuffer.makeCopyOf(mainBuffer);
     int sourceIRIndex = apvts.getRawParameterValue("IR_SOURCE")->load();
     this->validateConvolutionState(sourceIRIndex, apvts.getRawParameterValue("INTERNAL_IR")->load());
-    // internal 0, external 1, bus 2
     convolution.process(mainBuffer, busBuffer, apvts);
     if (apvts.getRawParameterValue("LIMITER_BYPASS")->load())
         limiter.process(mainBuffer, apvts);
     dryWet->process(mainBuffer, dryBuffer, apvts);
+    
+    rmsLevelLeft.skip(mainBuffer.getNumSamples());
+    {
+        const float value = juce::Decibels::gainToDecibels(mainBuffer.getRMSLevel(0, 0, mainBuffer.getNumSamples()));
+        value < rmsLevelLeft.getCurrentValue()
+        ? rmsLevelLeft.setTargetValue(value)
+        : rmsLevelLeft.setCurrentAndTargetValue(value);
+    }
+    
+    if (mainBuffer.getNumChannels() == 2) {
+        rmsLevelRight.skip(mainBuffer.getNumSamples());
+        {
+            const float value = juce::Decibels::gainToDecibels(mainBuffer.getRMSLevel(1, 0, mainBuffer.getNumSamples()));
+            value < rmsLevelRight.getCurrentValue()
+            ? rmsLevelRight.setTargetValue(value)
+            : rmsLevelRight.setCurrentAndTargetValue(value);
+        }
+    }
 }
 
 //==============================================================================
@@ -214,6 +236,20 @@ void ConvolutionPluginAudioProcessor::validateConvolutionState(int sourceIRState
     }
 }
 
+const int ConvolutionPluginAudioProcessor::getMainBufferNumChannels()
+{
+    return mainBuffer.getNumChannels();
+}
+
+float ConvolutionPluginAudioProcessor::getRMSValue(const int &channel)
+{
+    jassert(channel == 0 || channel == 1);
+    if (channel == 0)
+        return rmsLevelLeft.getCurrentValue();
+    if (channel == 1)
+        return rmsLevelRight.getCurrentValue();
+    return 0.0f;
+}
 //==============================================================================
 // This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
