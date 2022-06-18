@@ -38,8 +38,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout ConvolutionPluginAudioProces
     parameters.add(std::make_unique<juce::AudioParameterChoice>("IR_SOURCE", "Impulse Source", EnvVars::getSourceOptions(), 0));
     parameters.add(std::make_unique<juce::AudioParameterChoice>("INTERNAL_IR", "Impulse Response", EnvVars::getinternalIROptions(), 0));
     parameters.add(std::make_unique<juce::AudioParameterBool>("LIMITER_BYPASS", "Limiter I/O", true));
-    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "Limiter Threshold", -12.0f, 2.0f, 0.0f));
-    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "Limiter Release", 1.0f, 4000.0f, 1000.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_THRESHOLD", "Limiter Threshold", -30.0f, 12.0f, 0.0f));
+    parameters.add(std::make_unique<juce::AudioParameterFloat>("LIMITER_RELEASE", "Limiter Release", 0.1f, 1500.0f, 500.0f));
     parameters.add(std::make_unique<juce::AudioParameterFloat>("DRY_WET", "Dry/Wet", 0.0f, 100.0f, 50.0f));
     
     return parameters;
