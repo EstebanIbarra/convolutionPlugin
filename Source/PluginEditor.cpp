@@ -6,6 +6,25 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
 {
     addAndMakeVisible(sourceIR);
     sourceIR.addItemList(EnvVars::getSourceOptions(), 1);
+    sourceIR.onChange = [this] () {
+        const int sourceState = audioProcessor.apvts.getRawParameterValue("IR_SOURCE")->load();
+        switch (sourceState) {
+            case 1:
+                dragAndDropComponent.repaint();
+                dragAndDropComponent.setVisible(true);
+                internalIR.setVisible(false);
+                break;
+            case 2:
+                dragAndDropComponent.setVisible(false);
+                internalIR.setVisible(false);
+                break;
+            default:
+                dragAndDropComponent.repaint();
+                dragAndDropComponent.setVisible(true);
+                internalIR.setVisible(true);
+                break;
+        }
+    };
     attachmentSourceIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "IR_SOURCE", sourceIR);
     
     addAndMakeVisible(dragAndDropComponent);
@@ -18,6 +37,15 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
     attachmentInternalIR = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(audioProcessor.apvts, "INTERNAL_IR", internalIR);
     
     addAndMakeVisible(limiterIO);
+    limiterIO.onClick = [this] () {
+        if (limiterIO.getToggleState()) {
+            limiterThreshold.setVisible(true);
+            limiterRelease.setVisible(true);
+        } else {
+            limiterThreshold.setVisible(false);
+            limiterRelease.setVisible(false);
+        }
+    };
     attachmentLimiterIO = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(audioProcessor.apvts, "LIMITER_BYPASS", limiterIO);
     
     addAndMakeVisible(limiterThreshold);
@@ -64,24 +92,32 @@ void ConvolutionPluginAudioProcessorEditor::resized()
     const float horizontalElementsHeight = 0.06f;
     const float comboBoxWidth = 0.6f;
     const float dragAndDropWidth = 1.0f - 2.0f * spacing;
-    const float dragAndDropHeight = 0.2f;
+    const float dragAndDropHeight = 0.34f;
     float proportionalY = spacing;
     
     sourceIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
     proportionalY += horizontalElementsHeight + spacing;
     
-    dragAndDropComponent.setBoundsRelative(spacing, proportionalY, dragAndDropWidth, dragAndDropHeight);
-    proportionalY += dragAndDropHeight + spacing;
+    if (dragAndDropComponent.isVisible()) {
+        dragAndDropComponent.setBoundsRelative(spacing, proportionalY, dragAndDropWidth, dragAndDropHeight);
+        proportionalY += dragAndDropHeight + spacing;
+    }
     
-    internalIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
-    proportionalY += horizontalElementsHeight + spacing;
+    if (internalIR.isVisible()) {
+        internalIR.setBoundsRelative(spacing, proportionalY, comboBoxWidth, horizontalElementsHeight);
+        proportionalY += horizontalElementsHeight + spacing;
+    }
     
     limiterIO.setBoundsRelative(leftMarginOffset / 2.7f, proportionalY + spacing / 2, 0.1f, 0.1f);
-    limiterThreshold.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
-    proportionalY += horizontalElementsHeight + spacing;
-    
-    limiterRelease.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
-    proportionalY += horizontalElementsHeight + spacing;
+    if (limiterIO.getToggleState()) {
+        limiterThreshold.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
+        proportionalY += horizontalElementsHeight + spacing;
+        
+        limiterRelease.setBoundsRelative(leftMarginOffset, proportionalY, slidersWidth, horizontalElementsHeight);
+        proportionalY += horizontalElementsHeight + spacing;
+    } else {
+        proportionalY += 2.0f * horizontalElementsHeight + 2.0f * spacing;
+    }
     
     if (audioProcessor.getMainBufferNumChannels() == 2) {
         dryWet.setBoundsRelative(spacing / 2.0f, proportionalY - spacing / 2.0f, 0.2f, 0.2f);
@@ -90,7 +126,7 @@ void ConvolutionPluginAudioProcessorEditor::resized()
         levelMeterR.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, horizontalElementsHeight);
         proportionalY += horizontalElementsHeight + spacing;
     } else {
-        dryWet.setBoundsRelative(spacing, proportionalY, leftMarginOffset, leftMarginOffset);
+        dryWet.setBoundsRelative(spacing / 2.0f, proportionalY - spacing / 2.0f, 0.2f, 0.2f);
         levelMeterL.setBoundsRelative(leftMarginOffset, proportionalY, levelMeterWidth, 2.0f * horizontalElementsHeight);
         proportionalY += 2.0f * horizontalElementsHeight + spacing;
     }
