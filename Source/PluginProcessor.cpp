@@ -241,6 +241,11 @@ const int ConvolutionPluginAudioProcessor::getMainBufferNumChannels()
     return mainBuffer.getNumChannels();
 }
 
+juce::AudioBuffer<float>& ConvolutionPluginAudioProcessor::getConvolutionBusBuffer()
+{
+    return busBuffer;
+}
+
 float ConvolutionPluginAudioProcessor::getRMSValue(const int &channel)
 {
     jassert(channel == 0 || channel == 1);

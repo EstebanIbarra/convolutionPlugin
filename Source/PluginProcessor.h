@@ -62,6 +62,9 @@ public:
     void validateConvolutionState(int sourceIRState, int internalIRState);
     
     const int getMainBufferNumChannels();
+    
+    juce::AudioBuffer<float>& getConvolutionBusBuffer();
+    
     float getRMSValue(const int &channel);
     //==============================================================================
     juce::AudioProcessorValueTreeState apvts;
