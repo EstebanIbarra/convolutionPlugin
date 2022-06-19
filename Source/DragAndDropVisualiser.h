@@ -49,26 +49,41 @@ public:
     void filesDropped (const juce::StringArray &files, int x, int y) override;
     
     /**
-     Draws the External IR Component
+     Draws the External IR waveform
      @param juce::Graphics &g
      @return void
      */
     void drawExternalIRWaveform(juce::Graphics &g);
     
     /**
-     Draws the internal IR Component
+     Draws the internal IR waveform
      @param juce::Graphics &g
      @return void
      */
-    void drawInternalIRCWaveform(juce::Graphics &g);
+    void drawInternalIRWaveform(juce::Graphics &g);
     
     /**
-     Draws a waveform
+     Draws the Bus Buffer waveform
      @param juce::Graphics &g
+     @return void
+     */
+    void drawBusBufferWaveform(juce::Graphics &g);
+    
+    /**
+     Draws the waveform contained in an AudioBuffer
+     @param juce::Graphics &g
+     @param juce::AudioBuffer<float> &buffer
      @param bool isStereo, defaults to false
      @return void
      */
-    void drawWaveform(juce::Graphics &g, bool isStereo = false);
+    void drawWaveform(juce::Graphics &g, juce::AudioBuffer<float> &buffer, bool isStereo = false);
+    
+    /**
+     Draws error message
+     @param juce::Graphics &g
+     @return void
+     */
+    void drawErrorMessage(juce::Graphics &g);
     
     /**
      Changes the source IR

@@ -11,16 +11,16 @@ ConvolutionPluginAudioProcessorEditor::ConvolutionPluginAudioProcessorEditor (Co
         switch (sourceState) {
             case 1:
                 dragAndDropComponent.repaint();
-                dragAndDropComponent.setVisible(true);
+                //dragAndDropComponent.setVisible(true);
                 internalIR.setVisible(false);
                 break;
             case 2:
-                dragAndDropComponent.setVisible(false);
+                //dragAndDropComponent.setVisible(false);
                 internalIR.setVisible(false);
                 break;
             default:
                 dragAndDropComponent.repaint();
-                dragAndDropComponent.setVisible(true);
+                //dragAndDropComponent.setVisible(true);
                 internalIR.setVisible(true);
                 break;
         }
@@ -141,4 +141,7 @@ void ConvolutionPluginAudioProcessorEditor::timerCallback()
     levelMeterR.setLevel(audioProcessor.getRMSValue(1));
     levelMeterL.repaint();
     levelMeterR.repaint();
+    const int sourceState = audioProcessor.apvts.getRawParameterValue("IR_SOURCE")->load();
+    if (sourceState == 2)
+        dragAndDropComponent.repaint();
 }

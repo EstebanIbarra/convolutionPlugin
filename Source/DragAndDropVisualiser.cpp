@@ -22,26 +22,22 @@ DragAndDropVisualiser::~DragAndDropVisualiser()
 
 void DragAndDropVisualiser::paint (juce::Graphics& g)
 {
-    /* This demo code just fills the component's background and
-     draws some placeholder text to get you started.
-     
-     You should replace everything in this method with your own
-     drawing code..
-     */
-    
-    g.fillAll (getLookAndFeel().findColour (juce::ComboBox::backgroundColourId));   // clear the background
+    g.fillAll (getLookAndFeel().findColour (juce::ComboBox::backgroundColourId));
     
     g.setColour (juce::Colours::grey);
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+    g.drawRect (getLocalBounds(), 1);
     
     g.setColour (juce::Colours::white);
     int sourceIR = audioProcessor.apvts.getRawParameterValue("IR_SOURCE")->load();
     switch (sourceIR) {
         case 0: // Internal IR
-            drawInternalIRCWaveform(g);
+            drawInternalIRWaveform(g);
             break;
         case 1: // External IR
             drawExternalIRWaveform(g);
+            break;
+        case 2: // Bus Buffer
+            drawBusBufferWaveform(g);
             break;
         default:
             break;
@@ -105,18 +101,18 @@ void DragAndDropVisualiser::drawExternalIRWaveform(juce::Graphics &g)
         if (numChannels == 1) {
             waveformBuffer.setSize(numChannels, sampleLenght);
             fileReader->read(&waveformBuffer, 0, sampleLenght, 0, true, false);
-            drawWaveform(g);
+            drawWaveform(g, waveformBuffer);
         } else {
             waveformBuffer.setSize(numChannels, sampleLenght);
             fileReader->read(&waveformBuffer, 0, sampleLenght, 0, true, true);
-            drawWaveform(g, true);
+            drawWaveform(g, waveformBuffer, true);
         }
         g.setFont(10.0f);
         g.drawText(fileName, bounds, juce::Justification::centredBottom, true);
     }
 }
 
-void DragAndDropVisualiser::drawInternalIRCWaveform(juce::Graphics &g)
+void DragAndDropVisualiser::drawInternalIRWaveform(juce::Graphics &g)
 {
     const int indexIR = audioProcessor.apvts.getRawParameterValue("INTERNAL_IR")->load();
     const char *binaryData = audioProcessor.convolution.getInternalIRData(indexIR);
@@ -129,28 +125,35 @@ void DragAndDropVisualiser::drawInternalIRCWaveform(juce::Graphics &g)
         int sampleLenght = static_cast<int>(formatReader->lengthInSamples);
         waveformBuffer.setSize(formatReader->numChannels, sampleLenght);
         formatReader->read(&waveformBuffer, 0, sampleLenght, 0, true, false);
-        drawWaveform(g, true);
+        drawWaveform(g, waveformBuffer, true);
     } else {
-        juce::Rectangle<float> bounds = getLocalBounds().toFloat();
-        g.setFont (14.0f);
-        g.drawText ("Oops, something went wrong", bounds, juce::Justification::centred, true);
+        drawErrorMessage(g);
     }
 }
 
-void DragAndDropVisualiser::drawWaveform(juce::Graphics &g, bool isStereo)
+void DragAndDropVisualiser::drawBusBufferWaveform(juce::Graphics &g)
+{
+    juce::AudioBuffer<float> buffer = audioProcessor.getConvolutionBusBuffer();
+    //buffer.getNumChannels() == 2 ? drawWaveform(g, buffer, true) : drawWaveform(g, buffer);
+    if (buffer.getNumChannels() > 0 && buffer.getNumChannels() < 3) {
+        buffer.getNumChannels() == 2 ? drawWaveform(g, buffer, true) : drawWaveform(g, buffer);
+    }
+}
+
+void DragAndDropVisualiser::drawWaveform(juce::Graphics &g, juce::AudioBuffer<float> &buffer, bool isStereo)
 {
     audioSamplesL.clear();
     audioSamplesR.clear();
-    const int numSamples = waveformBuffer.getNumSamples();
+    const int numSamples = buffer.getNumSamples();
     const int ratio = numSamples / getWidth();
-    const float *bufferL(waveformBuffer.getReadPointer(0));
+    const float *bufferL(buffer.getReadPointer(0));
     const float height = static_cast<float>(getHeight());
     const float halfHeight = height / 2.0f;
     juce::Path pathL;
     const juce::PathStrokeType thickness (2.0f);
     if (isStereo) {
         juce::Path pathR;
-        const float *bufferR(waveformBuffer.getReadPointer(1));
+        const float *bufferR(buffer.getReadPointer(1));
         for (int sample = 0; sample < numSamples; sample += ratio) {
             audioSamplesL.push_back(bufferL[sample]);
             audioSamplesR.push_back(bufferR[sample]);
@@ -171,9 +174,15 @@ void DragAndDropVisualiser::drawWaveform(juce::Graphics &g, bool isStereo)
         }
         pathL.startNewSubPath(0.0f, halfHeight);
         for (int sample = 0; sample < audioSamplesL.size(); sample++) {
-            float scaledY = juce::jmap(audioSamplesL[sample], -1.0f, 1.0f, static_cast<float>(getHeight()), 0.0f);
+            float scaledY = juce::jmap(audioSamplesL[sample], -1.0f, 1.0f, height, 0.0f);
             pathL.lineTo(sample, scaledY);
         }
     }
     g.strokePath(pathL, thickness);
+}
+
+void DragAndDropVisualiser::drawErrorMessage(juce::Graphics &g) {
+    juce::Rectangle<float> bounds = getLocalBounds().toFloat();
+    g.setFont (14.0f);
+    g.drawText ("Oops, something went wrong", bounds, juce::Justification::centred, true);
 }
