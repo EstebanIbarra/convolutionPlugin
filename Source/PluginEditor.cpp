@@ -142,6 +142,9 @@ void ConvolutionPluginAudioProcessorEditor::timerCallback()
     levelMeterL.repaint();
     levelMeterR.repaint();
     const int sourceState = audioProcessor.apvts.getRawParameterValue("IR_SOURCE")->load();
-    if (sourceState == 2)
+    juce::AudioBuffer<float> buffer = audioProcessor.getConvolutionBusBuffer();
+    if (sourceState == 2 && buffer.getNumChannels() > 0 && buffer.getNumChannels() < 3) {
+        dragAndDropComponent.setBusBuffer(buffer);
         dragAndDropComponent.repaint();
+    }
 }

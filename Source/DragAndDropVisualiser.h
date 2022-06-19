@@ -91,10 +91,13 @@ public:
      */
     std::function<void()> changeSourceIR;
     
+    void setBusBuffer(juce::AudioBuffer<float> &buffer);
+    
 private:
     ConvolutionPluginAudioProcessor &audioProcessor;
     juce::AudioFormatManager formatManager;
     juce::AudioBuffer<float> waveformBuffer;
+    juce::AudioBuffer<float> busBuffer;
     std::vector<float> audioSamplesL;
     std::vector<float> audioSamplesR;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DragAndDropVisualiser)

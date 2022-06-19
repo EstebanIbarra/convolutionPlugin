@@ -14,6 +14,7 @@
 //==============================================================================
 DragAndDropVisualiser::DragAndDropVisualiser(ConvolutionPluginAudioProcessor &p) : audioProcessor(p)
 {
+    busBuffer = audioProcessor.getConvolutionBusBuffer();
 }
 
 DragAndDropVisualiser::~DragAndDropVisualiser()
@@ -133,11 +134,7 @@ void DragAndDropVisualiser::drawInternalIRWaveform(juce::Graphics &g)
 
 void DragAndDropVisualiser::drawBusBufferWaveform(juce::Graphics &g)
 {
-    juce::AudioBuffer<float> buffer = audioProcessor.getConvolutionBusBuffer();
-    //buffer.getNumChannels() == 2 ? drawWaveform(g, buffer, true) : drawWaveform(g, buffer);
-    if (buffer.getNumChannels() > 0 && buffer.getNumChannels() < 3) {
-        buffer.getNumChannels() == 2 ? drawWaveform(g, buffer, true) : drawWaveform(g, buffer);
-    }
+    busBuffer.getNumChannels() == 2 ? drawWaveform(g, busBuffer, true) : drawWaveform(g, busBuffer);
 }
 
 void DragAndDropVisualiser::drawWaveform(juce::Graphics &g, juce::AudioBuffer<float> &buffer, bool isStereo)
@@ -185,4 +182,9 @@ void DragAndDropVisualiser::drawErrorMessage(juce::Graphics &g) {
     juce::Rectangle<float> bounds = getLocalBounds().toFloat();
     g.setFont (14.0f);
     g.drawText ("Oops, something went wrong", bounds, juce::Justification::centred, true);
+}
+
+void DragAndDropVisualiser::setBusBuffer(juce::AudioBuffer<float> &buffer)
+{
+    busBuffer = buffer;
 }
